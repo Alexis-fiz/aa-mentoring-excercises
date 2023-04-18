@@ -11,11 +11,11 @@
 '---------------------------------------------------------';
 
 
-// console.log(hero); // ReferenceError: num is not defined
-// console.log(sidekick); // ReferenceError: num2 is not defined
+// console.log(hero); // ReferenceError: hero is not defined
+// console.log(sidekick); // ReferenceError: sidekick is not defined
 
-// const hero = 10;
-// let sidekick = 5;
+// const hero = 'Batman';
+// let sidekick = 'Robin';
 
 '---------------------------------------------------------';
 
