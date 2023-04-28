@@ -4,7 +4,7 @@
 // example 1
 // https://pythontutor.com/visualize.html#code=var%20teacher%20%3D%20%22Dimitris%22%3B%0A%0Afunction%20greetClass%28%29%20%7B%0A%20%20var%20teacher%20%3D%20%22Antonis%22%3B%0A%20%20console.log%28%22Hello%20class!%22%29%3B%0A%7D%0A%0Afunction%20ask%28%29%20%7B%0A%20%20var%20question%20%3D%20%22Why%3F%22%3B%20//%20Ain't%20nothin'%20but%20a%20heartache%0A%20%20console.log%28question%29%3B%0A%7D%0A%0AgreetClass%28%29%3B%0Aask%28%29%3B&cumulative=false&curInstr=2&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=js&rawInputLstJSON=%5B%5D&textReferences=false
 
-var teacher = "Dimitris 👨‍🏫";
+var teacher = "Dimitris";
 
 function greetClass() {
   var teacher = "Antonis";
@@ -12,12 +12,12 @@ function greetClass() {
 }
 
 function ask() {
-  var question = "Why?"; // Ain't nothin' but a heartache
+  var question = "Tell me why!"; // (ain't nothin' but a heartache)
   console.log(question);
 }
 
-greetClass();
-ask();
+greetClass(); // Hello class!
+ask(); // Tell me why!
 
 // example 2
 // https://pythontutor.com/visualize.html#code=var%20teacher%20%3D%20%22Dimitris%22%3B%0A%0Afunction%20greetClass%28%29%20%7B%0A%20%20%20%20teacher%20%3D%20%22Antonis%22%3B%0A%20%20%20%20topic%20%3D%20%22JavaScript%22%3B%0A%20%20%20%20console.log%28%22Hello%20class!%22%29%3B%0A%7D%0A%0Ateacher%3B%20%0Atopic%3B&cumulative=false&curInstr=3&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=js&rawInputLstJSON=%5B%5D&textReferences=false
