@@ -1,5 +1,5 @@
 // Presentation example: 
-var restaurant = "Krusty Krab 🍔";
+var meal = "Krusty Patty 🍔";
 
 function FineDining() {
   var meal = "Krabby Newburg 🍖";
@@ -21,6 +21,30 @@ let name = "SpongeBob🧽";
     let name = "Beef Wellington?";
 }
 
+// hide scope 
+(function CreateFunctionScope(){
+    var meal = "Krusty Patty 🍔";
+
+function FineDining() {
+  var meal = "Krabby Newburg 🍖";
+  console.log("Table for how many?");
+}
+
+function Breathing() {
+  var breath = "😤"; 
+  console.log(breath);
+}
+
+FineDining();
+Breathing(); 
+
+let name = "SpongeBob🧽";
+
+{
+    console.log("I must know your " + name);
+    let name = "Beef Wellington?";
+}
+})();
 
 // https://blog.codeanalogies.com/2017/11/22/how-javascript-variable-scoping-is-just-like-multiple-levels-of-government/
 
