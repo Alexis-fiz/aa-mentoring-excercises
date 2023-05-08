@@ -1,25 +1,19 @@
 // example 1 
 
-var teacher = "Kyle";
-otherTeacher(); // ??
+FineDining();
+Greeting();
 
-function otherTeacher() {
-    console.log(teacher); // shows undefined because "var teacher" exists in the function scope 
-    var teacher = "Suzy";
+function FineDining() {
+    console.log('Table for how many');
 };
 
+const Greeting = () => console.log("M-my name?");
 
 // example 2
 // let does not hoist? false
 
-{ 
-    teacher = "Dimitris";
-    let teacher;
-}
+console.log(fancyBurger);
+console.log(burger);
 
-var teacher = "Dimitris";
-
-{
-    console.log(teacher); // TDZ error!
-    let teacher = "Antonis";
-}
+let burger = "Krabby Patty 🍔";
+var fancyBurger = "Krabby Newburg 🍖";
