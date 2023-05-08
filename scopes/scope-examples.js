@@ -1,3 +1,14 @@
+{
+    var boss = "Mr Krabs";
+    let employee="Spongebob"; 
+    const coworker="Squidwards";
+}
+
+boss;
+employee;
+coworker;
+
+
 // Presentation example: 
 var meal = "Krusty Patty 🍔";
 
