@@ -107,7 +107,16 @@ document.getElementById("myForm").addEventListener("submit", function(event) {
   if (!validateForm()) {
     return;
   }
-  alert('Congratulations')
+  fetch('http://localhost:3000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      "access-control-allow-origin": "*",
+      SameSite: 'None',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({ username: username.value, email: email.value, password: password.value })
+  })
 });
 
 
@@ -150,11 +159,48 @@ function savePositionLocalStorage(elements) {
   });
 }
 
-document.getElementById('snap').addEventListener('click', function() {
-animateElements(allElements);
+document.getElementById('snap').addEventListener('click', async function() {
+  animateElements(allElements);
+  const response = await fetch('http://localhost:3000/adminStuff', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      "access-control-allow-origin": "*",
+      Accept: 'application/json'
+    }
+  })
+  const data = await response.json()
+  Object.entries(data).forEach(([key, value]) => {
+    localStorage.setItem(`${key}`, value);
+  });
+  console.log(data)
 });
 
 
-document.getElementById('save').addEventListener('click', function() {
-saveElements(allElements);
+document.getElementById('save').addEventListener('click', async function() {
+  saveElements(allElements);
+  const data = {
+    adminStuff: localStorage.getItem('adminStuff'),
+    much: localStorage.getItem('much')
+  }
+
+  const response = await fetch('http://localhost:3000/saveAdminStuff', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      "access-control-allow-origin": "*",
+      Accept: 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+
+  const responseData = await response.json()
+  Object.entries(responseData).forEach(([key, value]) => {
+    if (localStorage.getItem(key)) {
+      localStorage.setItem(`${key}`, value)
+    } else {
+      console.log(`This key(${key}) does not exist in localStorage. We are not updating the storage...`)
+    }
+  })
+  console.log(responseData)
 });
