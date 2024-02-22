@@ -1,6 +1,24 @@
 const http = require('http')
 const fs = require('fs/promises')
 
+const tokens = {
+    thanos: '6719b600-d193-11ee-9b7b-f9f1064b3430',
+    avengers: '7dbb830-d193-11ee-9b7b-f9f1064b3430'
+}
+
+const avengersArray = [
+    'Iron Man',
+    'Captain America',
+    'Thor',
+    'Hulk',
+    'Black Widow',
+    'Hawkeye',
+    'Scarlet Witch',
+    'Vision',
+    'Black Panther',
+    'Spider-Man'
+]
+
 const server = http.createServer(async (req, res) => {
     if (req.method === 'OPTIONS') {
         res.writeHead(200, {
@@ -52,9 +70,14 @@ const server = http.createServer(async (req, res) => {
         })
         req.on('end', () => {
             const data = JSON.parse(body)
-            if (data.username === 'admin' && data.password === '12345678') {
-                res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": "token=THISISACOOKIE"})
-                res.write(JSON.stringify({ name: "admin", age: 30, location: "Greece" }))
+            if (data.username === 'thanos' && data.password === 'thanos') {
+                res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": `token=${tokens.thanos}` })
+                res.write(JSON.stringify({ role: 'Thanos' }))
+                res.end()
+                return
+            } else if (avengersArray.includes(data.username) && data.password === data.username) {
+                res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": `token=${tokens.avengers}` })
+                res.write(JSON.stringify({ role: 'Avengers' }))
                 res.end()
                 return
             }
@@ -64,38 +87,57 @@ const server = http.createServer(async (req, res) => {
         })
     }
 
-    if (page === '/adminStuff') {
+    if (page === '/whosAvenger') {
         if (req.method !== 'GET') {
             res.writeHead(405)
             return res.end('Method Not Allowed')
         }
-        if (req.headers.cookie !== 'token=THISISACOOKIE') {
-            res.writeHead(401)
-            return res.end('Unauthorized')
+        if (req.headers.cookie == `token=${tokens.thanos}`) {
+            res.writeHead(200, { "Content-type": "application/json" })
+            return res.end(JSON.stringify({ avengers: avengersArray.slice(0, 5) }))
         }
-        res.writeHead(200, { "Content-type": "application/json"})
-        return res.end(JSON.stringify({ adminStuff: "This is the admin stuff", much: 'wow' }))
+
+        if (req.headers.cookie = `token=${tokens.avengers}`) {
+            res.writeHead(200, { "Content-type": "application/json" })
+            return res.end(JSON.stringify({ avengers: avengersArray }))
+        }
+        res.writeHead(401)
+        return res.end('Unauthorized')
     }
 
-    if (page === '/saveAdminStuff') {
-        if (req.method !== 'POST') {
+    if (page === '/getPositions') {
+        if (req.method !== 'GET') {
             res.writeHead(405)
             return res.end('Method Not Allowed')
         }
-        if (req.headers.cookie !== 'token=THISISACOOKIE') {
-            res.writeHead(401)
-            return res.end('Unauthorized')
+        if (req.headers.cookie === `token=${tokens.avengers}`) {
+            res.writeHead(200, { "Content-type": "application/json" })
+            return res.end(JSON.stringify({
+                username: ['X', 'Y'],
+                email: ['X', 'Y'],
+                password: ['X', 'Y'],
+                userNameLabel: ['X', 'Y'],
+                emailLabel: ['X', 'Y'],
+                passwordLabel: ['X', 'Y'],
+                submitButton: ['X', 'Y']
+            }))
         }
-        let body = ''
-        req.on('data', chunk => {
-            body += chunk.toString()
-        })
-        req.on('end', () => {
-            const data = JSON.parse(body)
-            console.log('We are now saving the data: ', data)
-            res.writeHead(200, { "Content-type": "application/json"})
-            return res.end(JSON.stringify({ message: 'Data has been saved', adminStuff: 'This is updated admin stuff' }))
-        })
+
+        if (req.headers.cookie === `token=${tokens.thanos}`) {
+            res.writeHead(200, { "Content-type": "application/json" })
+            return res.end(JSON.stringify({
+                username: ['X', 'Y'],
+                email: ['X', 'Y'],
+                password: ['X', 'Y'],
+                userNameLabel: ['X', 'Y'],
+                emailLabel: ['X', 'Y'],
+                passwordLabel: ['X', 'Y'],
+                submitButton: ['X', 'Y']
+            }))
+        
+        }
+        res.writeHead(401)
+        return res.end('Unauthorized')
     }
 })
 
