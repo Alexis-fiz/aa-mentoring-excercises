@@ -29,10 +29,17 @@ const server = http.createServer(async (req, res) => {
         })
         return res.end()
     }
+
+    // Set CORS headers for regular requests
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+
     if (!req.url || !req.headers.host) {
         res.writeHead(400)
         return res.end('Bad Request')
     }
+
     const page = new URL(req.url, `http://${req.headers.host}`).pathname
     const params = new URLSearchParams(req.url.split('?')[1])
 
@@ -75,7 +82,7 @@ const server = http.createServer(async (req, res) => {
                 res.write(JSON.stringify({ role: 'Thanos' }))
                 res.end()
                 return
-            } else if (avengersArray.includes(data.username) && data.password === data.username) {
+            } else if (data.username === 'avengers' && data.password === 'avengers') {
                 res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": `token=${tokens.avengers}` })
                 res.write(JSON.stringify({ role: 'Avengers' }))
                 res.end()
@@ -94,10 +101,12 @@ const server = http.createServer(async (req, res) => {
         }
         if (req.headers.cookie == `token=${tokens.thanos}`) {
             res.writeHead(200, { "Content-type": "application/json" })
+            console.log('thanos', req.headers.cookie);
             return res.end(JSON.stringify({ avengers: avengersArray.slice(0, 5) }))
         }
 
         if (req.headers.cookie = `token=${tokens.avengers}`) {
+            console.log('avengers', req.headers.cookie);
             res.writeHead(200, { "Content-type": "application/json" })
             return res.end(JSON.stringify({ avengers: avengersArray }))
         }

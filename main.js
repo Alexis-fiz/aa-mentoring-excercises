@@ -1,113 +1,47 @@
-var username = document.getElementById("username");
-var email = document.getElementById("email");
-var password = document.getElementById("password");
-var usernameLabel = document.getElementById("label-username");
-var emailLabel = document.getElementById("label-email");
-var passwordLabel = document.getElementById("label-password");
-var submitButton = document.getElementById("submit-button");
+const username = document.getElementById("username");
+const password = document.getElementById("password");
 
-const allElements = [username, email, password, usernameLabel, emailLabel, passwordLabel, submitButton];
-
-savePositionLocalStorage(allElements);
-
-
-function togglePassword() {
-  var passwordField = document.getElementById("password");
-  if (passwordField.type === "password") {
-    passwordField.type = "text";
-  } else {
-    passwordField.type = "password";
+function validUsername() {
+  const valueLowerCase = username.value.toLowerCase();
+  if (valueLowerCase !== 'thanos' && valueLowerCase !== 'thor') {
+    document.getElementById("username-error").textContent = "Username should be either thanos or avengers";
+    return false;
   }
+  return true;
 }
 
-function validateForm() {
-
-  var isValid = true;
-
-  document.getElementById("usernameError").textContent = "";
-  document.getElementById("emailError").textContent = "";
-  document.getElementById("passwordError").textContent = "";
-
-  if (username.value.length < 4) {
-    document.getElementById("usernameError").textContent = "Username is not long enough";
-    isValid = false;
+function validPassowrd() {
+  if (password.value !== username.value) {
+    document.getElementById("password-error").textContent = "Password must match Username";
+    return false;
   }
-  if (username.value === "") {
-    document.getElementById("usernameError").textContent = "Username is required";
-    isValid = false;
-  }
-
-  if (!isValidEmail(email.value)) {
-    document.getElementById("emailError").textContent = "Invalid email format";
-    isValid = false;
-  }
-  
-  if (!/\d/.test(password.value)) {
-    document.getElementById("passwordError").textContent = "Password must contain at least one number";
-    isValid = false;
-  }
-  if (password.value.length < 8) {
-    document.getElementById("passwordError").textContent = "Password needs to be more than 8 characters";
-    isValid = false;
-  }
-  if (password.value === "") {
-    document.getElementById("passwordError").textContent = "Password is required";
-    isValid = false;
-  }
-
-  return isValid;
-}
-
-function isValidEmail(email) {
-  var emailRegex = /\S+@\S+\.\S+/;
-  return emailRegex.test(email);
+  return true;
 }
 
 username.addEventListener('focus', function() {
-  document.getElementById("usernameError").textContent = "";
-});
-
-email.addEventListener('focus', function() {
-  document.getElementById("emailError").textContent = "";
-});
-
-password.addEventListener('focus', function() {
-  document.getElementById("passwordError").textContent = "";
+  document.getElementById("username-error").textContent = "";
 });
 
 username.addEventListener('blur', function() {
-  if (username.value === "") {
-    document.getElementById("usernameError").textContent = "Username is required";
-  }
-  if (username.value.length < 4) {
-    document.getElementById("usernameError").textContent = "Username is not long enough";
-  }
+  validUsername();
 });
 
-email.addEventListener('blur', function() {
-  if (!isValidEmail(email.value)) {
-    document.getElementById("emailError").textContent = "Invalid email format";
-  }
+password.addEventListener('focus', function() {
+  document.getElementById("password-error").textContent = "";
 });
 
 password.addEventListener('blur', function() {
-  if (password.value === "") {
-    document.getElementById("passwordError").textContent = "Password is required";
-  }
-  if (!/\d/.test(password.value)) {
-    document.getElementById("passwordError").textContent = "Password must contain at least one number";
-  }
-  if (password.value.length < 8) {
-    document.getElementById("passwordError").textContent = "Password needs to be more than 8 characters";
-  }
+  validPassowrd();
 });
 
-document.getElementById("myForm").addEventListener("submit", function(event) {
+document.getElementById("myForm").addEventListener("submit", async function(event) {
+  const isFormValid = validUsername() && validPassowrd();
   event.preventDefault();
-  if (!validateForm()) {
+  if (!isFormValid) {
     return;
   }
-  fetch('http://localhost:3000/login', {
+  // document.querySelector('.formBox').classList.add('hide');
+  const response = await fetch('http://localhost:3000/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -115,92 +49,67 @@ document.getElementById("myForm").addEventListener("submit", function(event) {
       SameSite: 'None',
       Accept: 'application/json'
     },
-    body: JSON.stringify({ username: username.value, email: email.value, password: password.value })
+    body: JSON.stringify({ username: username.value, password: password.value })
   })
+  const data = await response.json();
+  if (data?.role === 'Thanos') {
+
+    getAvengersAlive();
+
+    // this is to be written by users
+    var thanosButton = document.createElement('button');
+    thanosButton.id = 'thanosButton'; 
+    thanosButton.textContent = 'Snap';
+    thanosButton.classList.add('btn')
+    document.querySelector('.button-container').appendChild(thanosButton);
+    
+    
+    thanosButton.addEventListener('click', function() {
+      // ---------------------------------- 
+      // function provided by us onSnap()
+      const snap = document.createElement('div');
+      const container = document.querySelector('.container');
+      snap.classList.add('coverSite');
+      container.appendChild(snap);
+      document.getElementById('thanosButton').classList.add('hide');
+    })
+
+  } else if (role === 'Avengers') {
+  //   const avengersButton = document.createElement('button');
+  //   avengersButton.id = 'avengersButton'; 
+  //   avengersButton.textContent = 'Save';
+  //   avengersButton.classList.add('btn')
+  //   document.querySelector('.button-container').appendChild(avengersButton);
+  }
 });
 
 
-function animateElements(elements) {
-  elements.forEach(element => {
-    // Move element to a new location
-    var newX = Math.random() * window.innerWidth + 20;
-    var newY = Math.random() * window.innerHeight + 10;
-    element.style.left = newX + "px";
-    element.style.top = newY + "px";
-  
-    // Rotate element
-    var newRotation = Math.random() * 360; // Rotate randomly between 0 and 360 degrees
-    element.style.transform = "translate(-50%, -50%) rotate(" + newRotation + "deg)";
-  })
-}
+document.getElementById('save').addEventListener('click', function() {
+  console.log('save clicked')
+})
 
-function saveElements(elements) {
-  elements.forEach(element => {
-    // Move element to a saved location
-    var newX = localStorage.getItem(`${element.id}X`);
-    var newY = localStorage.getItem(`${element.id}Y`);
-    element.style.left = newX + "px";
-    element.style.top = newY + "px";
-  
-    // Un-Rotate element
-    element.style.transform = "";
 
-  })
-}
-
-function savePositionLocalStorage(elements) {
-  elements.forEach(element => {
-    var rect = element.getBoundingClientRect();
-    var x = rect.left + window.pageXOffset;
-    var y = rect.top + window.pageYOffset;
-    localStorage.setItem(`${element.id}X`, x.toString());
-    localStorage.setItem(`${element.id}Y`, y.toString());
-
-  });
-}
-
-document.getElementById('snap').addEventListener('click', async function() {
-  animateElements(allElements);
-  const response = await fetch('http://localhost:3000/adminStuff', {
+async function getAvengersAlive() {
+  const response = await fetch('http://localhost:3000/whosAvenger', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       "access-control-allow-origin": "*",
-      Accept: 'application/json'
-    }
-  })
-  const data = await response.json()
-  Object.entries(data).forEach(([key, value]) => {
-    localStorage.setItem(`${key}`, value);
-  });
-  console.log(data)
-});
-
-
-document.getElementById('save').addEventListener('click', async function() {
-  saveElements(allElements);
-  const data = {
-    adminStuff: localStorage.getItem('adminStuff'),
-    much: localStorage.getItem('much')
-  }
-
-  const response = await fetch('http://localhost:3000/saveAdminStuff', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      "access-control-allow-origin": "*",
+      SameSite: 'None',
       Accept: 'application/json'
     },
-    body: JSON.stringify(data)
   })
+  const {avengers} = await response.json()
+  localStorage.setItem('avengers', avengers);
+}
 
-  const responseData = await response.json()
-  Object.entries(responseData).forEach(([key, value]) => {
-    if (localStorage.getItem(key)) {
-      localStorage.setItem(`${key}`, value)
-    } else {
-      console.log(`This key(${key}) does not exist in localStorage. We are not updating the storage...`)
-    }
-  })
-  console.log(responseData)
-});
+function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
