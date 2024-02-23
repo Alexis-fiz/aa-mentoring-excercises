@@ -1,0 +1,50 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: 20px 10%;
+}
+
+.stones-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding:20px
+}
+
+.infinity-stone {
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: transform .2s; /* Animation */
+}
+
+.infinity-stone:hover {
+    transform: scale(1.2); 
+}
+
+.infinity-stone-completed {
+    opacity: 50%;
+    pointer-events: none;
+    color: green;
+}
+
+.stone-text {
+    font-size: 20px;
+    font-family: monospace;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stone-img {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
