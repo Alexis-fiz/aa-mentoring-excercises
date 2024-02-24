@@ -42,7 +42,7 @@ document.getElementById("myForm").addEventListener("submit", async function(even
   if (!isFormValid) {
     return;
   }
-  
+
   document.querySelector('.formBox').classList.add('hide');
   
   const response = await fetch('http://localhost:3000/login', {
@@ -68,7 +68,7 @@ document.getElementById("myForm").addEventListener("submit", async function(even
     thanosButton.addEventListener('click', async function() {
       await getAvengersAlive();
       displayAvengers();
-    })
+    }, { once: true })
 
   } else if (data?.role === 'Avengers') {
     
@@ -82,7 +82,7 @@ document.getElementById("myForm").addEventListener("submit", async function(even
     avengersButton.addEventListener('click', async function() {
       await getAvengersAlive();
       displayAvengers();
-    })
+    }, { once: true })
   }
 });
 

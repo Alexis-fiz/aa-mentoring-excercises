@@ -22,18 +22,20 @@ const avengersArray = [
 const server = http.createServer(async (req, res) => {
     if (req.method === 'OPTIONS') {
         res.writeHead(200, {
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "http://localhost:5500",
             "Access-Control-Allow-Methods": "GET, POST",
-            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            "Access-Control-Allow-Credentials": 'true',
             "Access-Control-Max-Age": "86400"
         })
         return res.end()
     }
 
     // Set CORS headers for regular requests
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:5500");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials
 
     if (!req.url || !req.headers.host) {
         res.writeHead(400)
@@ -41,7 +43,6 @@ const server = http.createServer(async (req, res) => {
     }
 
     const page = new URL(req.url, `http://${req.headers.host}`).pathname
-    const params = new URLSearchParams(req.url.split('?')[1])
 
     if (page === '/form.html') {
         const file = await fs.readFile('form.html')
@@ -78,12 +79,12 @@ const server = http.createServer(async (req, res) => {
         req.on('end', () => {
             const data = JSON.parse(body)
             if (data.username === 'thanos' && data.password === 'thanos') {
-                res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": `token=${tokens.thanos}` })
+                res.writeHead(200, { "Content-type": "application/json", "set-cookie": `token=${tokens.thanos}` })
                 res.write(JSON.stringify({ role: 'Thanos' }))
                 res.end()
                 return
             } else if (data.username === 'avengers' && data.password === 'avengers') {
-                res.writeHead(200, { "Content-type": "application/json", "access-control-allow-origin": "*", "set-cookie": `token=${tokens.avengers}` })
+                res.writeHead(200, { "Content-type": "application/json", "set-cookie": `token=${tokens.avengers}` })
                 res.write(JSON.stringify({ role: 'Avengers' }))
                 res.end()
                 return
@@ -101,49 +102,12 @@ const server = http.createServer(async (req, res) => {
         }
         if (req.headers.cookie == `token=${tokens.thanos}`) {
             res.writeHead(200, { "Content-type": "application/json" })
-            console.log('thanos', req.headers.cookie);
             return res.end(JSON.stringify({ avengers: avengersArray.slice(0, 5) }))
         }
 
         if (req.headers.cookie = `token=${tokens.avengers}`) {
-            console.log('avengers', req.headers.cookie);
             res.writeHead(200, { "Content-type": "application/json" })
             return res.end(JSON.stringify({ avengers: avengersArray }))
-        }
-        res.writeHead(401)
-        return res.end('Unauthorized')
-    }
-
-    if (page === '/getPositions') {
-        if (req.method !== 'GET') {
-            res.writeHead(405)
-            return res.end('Method Not Allowed')
-        }
-        if (req.headers.cookie === `token=${tokens.avengers}`) {
-            res.writeHead(200, { "Content-type": "application/json" })
-            return res.end(JSON.stringify({
-                username: ['X', 'Y'],
-                email: ['X', 'Y'],
-                password: ['X', 'Y'],
-                userNameLabel: ['X', 'Y'],
-                emailLabel: ['X', 'Y'],
-                passwordLabel: ['X', 'Y'],
-                submitButton: ['X', 'Y']
-            }))
-        }
-
-        if (req.headers.cookie === `token=${tokens.thanos}`) {
-            res.writeHead(200, { "Content-type": "application/json" })
-            return res.end(JSON.stringify({
-                username: ['X', 'Y'],
-                email: ['X', 'Y'],
-                password: ['X', 'Y'],
-                userNameLabel: ['X', 'Y'],
-                emailLabel: ['X', 'Y'],
-                passwordLabel: ['X', 'Y'],
-                submitButton: ['X', 'Y']
-            }))
-        
         }
         res.writeHead(401)
         return res.end('Unauthorized')
