@@ -1,9 +1,11 @@
+displayAvengers();
+
 const username = document.getElementById("username");
 const password = document.getElementById("password");
 
 function validUsername() {
   const valueLowerCase = username.value.toLowerCase();
-  if (valueLowerCase !== 'thanos' && valueLowerCase !== 'thor') {
+  if (valueLowerCase !== 'thanos' && valueLowerCase !== 'avengers') {
     document.getElementById("username-error").textContent = "Username should be either thanos or avengers";
     return false;
   }
@@ -40,22 +42,21 @@ document.getElementById("myForm").addEventListener("submit", async function(even
   if (!isFormValid) {
     return;
   }
-  // document.querySelector('.formBox').classList.add('hide');
+  
+  document.querySelector('.formBox').classList.add('hide');
+  
   const response = await fetch('http://localhost:3000/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      "access-control-allow-origin": "*",
-      SameSite: 'None',
-      Accept: 'application/json'
     },
-    body: JSON.stringify({ username: username.value, password: password.value })
+    body: JSON.stringify({ username: username.value, password: password.value }),
+    credentials: 'include' // Include cookies in the request and response
   })
+  
   const data = await response.json();
   if (data?.role === 'Thanos') {
-
-    getAvengersAlive();
-
+    
     // this is to be written by users
     var thanosButton = document.createElement('button');
     thanosButton.id = 'thanosButton'; 
@@ -64,29 +65,26 @@ document.getElementById("myForm").addEventListener("submit", async function(even
     document.querySelector('.button-container').appendChild(thanosButton);
     
     
-    thanosButton.addEventListener('click', function() {
-      // ---------------------------------- 
-      // function provided by us onSnap()
-      const snap = document.createElement('div');
-      const container = document.querySelector('.container');
-      snap.classList.add('coverSite');
-      container.appendChild(snap);
-      document.getElementById('thanosButton').classList.add('hide');
+    thanosButton.addEventListener('click', async function() {
+      await getAvengersAlive();
+      displayAvengers();
     })
 
-  } else if (role === 'Avengers') {
-  //   const avengersButton = document.createElement('button');
-  //   avengersButton.id = 'avengersButton'; 
-  //   avengersButton.textContent = 'Save';
-  //   avengersButton.classList.add('btn')
-  //   document.querySelector('.button-container').appendChild(avengersButton);
+  } else if (data?.role === 'Avengers') {
+    
+    const avengersButton = document.createElement('button');
+    avengersButton.id = 'avengersButton'; 
+    avengersButton.textContent = 'Save';
+    avengersButton.classList.add('btn')
+    document.querySelector('.button-container').appendChild(avengersButton);
+    
+    
+    avengersButton.addEventListener('click', async function() {
+      await getAvengersAlive();
+      displayAvengers();
+    })
   }
 });
-
-
-document.getElementById('save').addEventListener('click', function() {
-  console.log('save clicked')
-})
 
 
 async function getAvengersAlive() {
@@ -94,22 +92,25 @@ async function getAvengersAlive() {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      "access-control-allow-origin": "*",
-      SameSite: 'None',
-      Accept: 'application/json'
     },
+    credentials: 'include'
   })
   const {avengers} = await response.json()
-  localStorage.setItem('avengers', avengers);
+  localStorage.setItem('avengers', JSON.stringify(avengers));
 }
 
-function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0;i < ca.length;i++) {
-      var c = ca[i];
-      while (c.charAt(0)==' ') c = c.substring(1,c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-  }
-  return null;
+
+function displayAvengers() {
+  const avengersString = localStorage.getItem('avengers');
+  if(!avengersString) return;
+
+  const avengers = JSON.parse(avengersString);
+  const container = document.getElementById('avengersContainer');
+  avengers.forEach(avenger => {
+    const cardHtml = `
+    <div class="card">
+        <p class="avenger-text">${avenger}</p>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', cardHtml); 
+  })
 }
