@@ -39,10 +39,9 @@ const TASKS = {
   }
   
   function markTaskAsCompleted(task) {
-    const div = document.getElementById(TASKS[task].divId);
-    if (!div) return;
-    div.classList.add('infinity-stone-completed');
-    // TODO: add the class infinity-stone-completed
+    const button = document.getElementById(TASKS[task].divId);
+    if (!button) return;
+    button.classList.add('infinity-stone-completed');
   }
   
   function onCompleteTask(task) {
@@ -59,7 +58,6 @@ const TASKS = {
   }
   
   function createEventListeners() {
-    // TODO
     const options = { once: true };
     const completedTasks = getCompletedTasksFromStorage();
     if (!completedTasks.includes('spaceStone')) {
@@ -79,15 +77,15 @@ const TASKS = {
       );
     }
     if (!completedTasks.includes('realityStone')) {
-      TASKS.realityStone.element.addEventListener(
-        'mouseover',
+      window.addEventListener(
+        'resize',
         () => onCompleteTask('realityStone'),
         options
       );
     }
-    if (!completedTasks.includes('powerStone')) {
-      window.addEventListener(
-        'resize',
+    if (!completedTasks.includes('powerStone')) {     
+      TASKS.powerStone.element.addEventListener(
+        'mouseover',
         () => onCompleteTask('powerStone'),
         options
       );
@@ -97,7 +95,7 @@ const TASKS = {
     }
     if (!completedTasks.includes('soulStone')) {
       TASKS.soulStone.element.addEventListener(
-        'click',
+        'focus',
         () => onCompleteTask('soulStone'),
         options
       );
