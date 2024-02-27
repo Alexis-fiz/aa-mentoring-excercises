@@ -25,19 +25,6 @@ const TASKS = {
     },
   };
   
-  function getCompletedTasksFromStorage() {
-    // TODO
-    return JSON.parse(localStorage.getItem('completedTasks')) || [];
-  }
-  
-  function setTaskCompletedInStorage(task) {
-    // TODO
-    localStorage.setItem(
-      'completedTasks',
-      JSON.stringify([...getCompletedTasksFromStorage(), task])
-    );
-  }
-  
   function markTaskAsCompleted(task) {
     const button = document.getElementById(TASKS[task].divId);
     if (!button) return;
@@ -55,6 +42,17 @@ const TASKS = {
       getCompletedTasksFromStorage().includes(task)
     );
     if (areAllTasksCompleted) window.location.href = 'form.html';
+  }
+
+  function getCompletedTasksFromStorage() {
+    return JSON.parse(localStorage.getItem('completedTasks')) || [];
+  }
+  
+  function setTaskCompletedInStorage(task) {
+    localStorage.setItem(
+      'completedTasks',
+      JSON.stringify([...getCompletedTasksFromStorage(), task])
+    );
   }
   
   function createEventListeners() {
